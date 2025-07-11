@@ -1,5 +1,4 @@
 ﻿using Blog.Domain.Enums;
-using MongoDB.Bson.Serialization.Attributes;
 namespace Blog.Cms.Api.Models;
 
 public class CreateUserRequest
