@@ -2,6 +2,7 @@
 using Blog.Domain.Entities;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace Blog.Core.Services;
 
@@ -12,6 +13,7 @@ public interface IPostService
     Task<Result<List<Post>>> GetAllAsync();
     Task<Result<bool>> UpdateAsync(Post post);
     Task<Result<bool>> DeleteAsync(Guid id);
+    Task<Result<Post>> GetByIdAsyncAggressiveInlining(string id);
 }
 
 public class PostService : IPostService
@@ -38,6 +40,22 @@ public class PostService : IPostService
         await _postRepository.CreateAsync(post);
         _logger.LogInformation("Post created successfully: {@Post}", post);
         return Result.Success(true);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public async Task<Result<Post>> GetByIdAsyncAggressiveInlining(string id)
+    {
+        _logger.LogInformation("GetByIdAsync called with Id: {Id}", id);
+
+        var post = await _postRepository.GetByIdAsync(p => p.Id == id.ToString());
+        if (post == null)
+        {
+            _logger.LogWarning("GetByIdAsync failed: Post not found for Id {Id}", id);
+            return Result.Failure<Post>("Post not found.");
+        }
+
+        _logger.LogInformation("Post retrieved successfully: {@Post}", post);
+        return Result.Success(post);
     }
 
     public async Task<Result<Post>> GetByIdAsync(string id)

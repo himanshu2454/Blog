@@ -1,0 +1,5 @@
+<RunSettings>
+  <EnvironmentVariables>
+    <COMPlus_JitPrintInlinedMethods>1</COMPlus_JitPrintInlinedMethods>
+  </EnvironmentVariables>
+</RunSettings>
